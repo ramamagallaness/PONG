@@ -68,7 +68,7 @@ public class juegopong extends JPanel implements ActionListener {
         g.fillRect((WIDTH - COURT_WIDTH) / 2 - PADDLE_WIDTH, player1Y, PADDLE_WIDTH, PADDLE_HEIGHT);
         g.fillRect((WIDTH + COURT_WIDTH) / 2, player2Y, PADDLE_WIDTH, PADDLE_HEIGHT);
 
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         int lineHeight = PADDLE_HEIGHT / 4;
         g.fillRect((WIDTH + COURT_WIDTH) / 2, player2Y + lineHeight, PADDLE_WIDTH, 1);
         g.fillRect((WIDTH + COURT_WIDTH) / 2, player2Y + 2 * lineHeight, PADDLE_WIDTH, 1);
@@ -77,14 +77,23 @@ public class juegopong extends JPanel implements ActionListener {
         g.setColor(Color.BLACK);
         g.fillOval(ballX, ballY, BALL_SIZE, BALL_SIZE);
         g.setFont(new Font("Arial", Font.BOLD, 24));
-        g.drawString("Jugador 1: " + player1Score, 20, 30);
-        g.drawString("Jugador 2: " + player2Score, WIDTH - 150, 30);
+
+        if (currentSet == 1) {
+            g.drawString("Jugador 1: " + player1Score, 20, 30);
+            g.drawString("Jugador 2: " + player2Score, WIDTH - 150, 30);
+        } else {
+            // En el segundo tiempo, se cambian los lados
+            g.drawString("Jugador 1: " + player1Score, WIDTH - 150, 30);
+            g.drawString("Jugador 2: " + player2Score, 20, 30);
+        }
+
         g.drawString("Tiempo restante: " + (remainingTime / 1000) + "s", WIDTH / 2 - 60, 30);
 
         if (isPaused) drawPauseMenu(g);
         if (gameOver) drawGameOverScreen(g);
         if (inMiniPause) drawMiniPauseScreen(g);
     }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -255,6 +264,6 @@ public class juegopong extends JPanel implements ActionListener {
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-    }
+    }  
 }
 
