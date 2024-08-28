@@ -134,8 +134,9 @@ public class juegopong extends JPanel implements ActionListener {
         int y = (HEIGHT - COURT_HEIGHT) / 2;
 
         if (ballY <= y || ballY >= y + COURT_HEIGHT - BALL_SIZE) ballYSpeed = -ballYSpeed;
-        if (ballX <= x + PADDLE_WIDTH && ballY + BALL_SIZE >= player1Y && ballY <= player1Y + PADDLE_HEIGHT) {
+        if (ballX <= x + PADDLE_WIDTH && ballY + BALL_SIZE > player1Y && ballY < player1Y + PADDLE_HEIGHT) {
             ballXSpeed = -ballXSpeed;
+            ballX = x + PADDLE_WIDTH;
             if (Math.abs(ballXSpeed) < MAX_BALL_SPEED) ballXSpeed *= SPEED_INCREMENT;
             if (Math.abs(ballYSpeed) < MAX_BALL_SPEED) ballYSpeed *= SPEED_INCREMENT;
         }
