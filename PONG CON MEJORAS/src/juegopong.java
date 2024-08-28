@@ -82,7 +82,7 @@ public class juegopong extends JPanel implements ActionListener {
             g.drawString("Jugador 1: " + player1Score, 20, 30);
             g.drawString("Jugador 2: " + player2Score, WIDTH - 150, 30);
         } else {
-            // En el segundo tiempo, se cambian los lados
+            
             g.drawString("Jugador 1: " + player1Score, WIDTH - 150, 30);
             g.drawString("Jugador 2: " + player2Score, 20, 30);
         }
@@ -140,6 +140,7 @@ public class juegopong extends JPanel implements ActionListener {
             if (Math.abs(ballXSpeed) < MAX_BALL_SPEED) ballXSpeed *= SPEED_INCREMENT;
             if (Math.abs(ballYSpeed) < MAX_BALL_SPEED) ballYSpeed *= SPEED_INCREMENT;
         }
+
 
         if (ballX >= x + COURT_WIDTH - PADDLE_WIDTH - BALL_SIZE && ballY + BALL_SIZE >= player2Y && ballY <= player2Y + PADDLE_HEIGHT) {
             ballXSpeed = -ballXSpeed;
@@ -215,21 +216,47 @@ public class juegopong extends JPanel implements ActionListener {
         g.fillRect(0, 0, WIDTH, HEIGHT);
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 36));
-        g.drawString("PAUSADO", WIDTH / 2 - 80, HEIGHT / 2 - 20);
+        String message = "PAUSADO";
+        FontMetrics metrics = g.getFontMetrics();
+        int x = (WIDTH - metrics.stringWidth(message)) / 2;
+        int y = HEIGHT / 2 - metrics.getHeight() / 2;
+        g.drawString(message, x, y);
+
         g.setFont(new Font("Arial", Font.PLAIN, 24));
-        g.drawString("Presiona ESC para reanudar", WIDTH / 2 - 130, HEIGHT / 2 + 20);
+        String subMessage = "Presiona ESC para reanudar";
+        metrics = g.getFontMetrics();
+        x = (WIDTH - metrics.stringWidth(subMessage)) / 2;
+        y += metrics.getHeight() + 10; 
+        g.drawString(subMessage, x, y);
     }
+
 
     private void drawGameOverScreen(Graphics g) {
         g.setColor(new Color(0, 0, 0, 150));
         g.fillRect(0, 0, WIDTH, HEIGHT);
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 36));
-        if (player1Score == player2Score && currentSet == 2) g.drawString("EMPATE", WIDTH / 2 - 90, HEIGHT / 2 - 20);
-        else if (player1Score > player2Score) g.drawString("¡JUGADOR 1 GANA!", WIDTH / 2 - 160, HEIGHT / 2 - 20);
-        else g.drawString("¡JUGADOR 2 GANA!", WIDTH / 2 - 160, HEIGHT / 2 - 20);
+        
+        String resultMessage;
+        if (player1Score == player2Score && currentSet == 2) {
+            resultMessage = "EMPATE";
+        } else if (player1Score > player2Score) {
+            resultMessage = "¡JUGADOR 1 GANA!";
+        } else {
+            resultMessage = "¡JUGADOR 2 GANA!";
+        }
+        
+        FontMetrics metrics = g.getFontMetrics();
+        int x = (WIDTH - metrics.stringWidth(resultMessage)) / 2;
+        int y = HEIGHT / 2 - metrics.getHeight() / 2;
+        g.drawString(resultMessage, x, y);
+        
         g.setFont(new Font("Arial", Font.PLAIN, 24));
-        g.drawString("Presiona ENTER para reiniciar", WIDTH / 2 - 140, HEIGHT / 2 + 30);
+        String subMessage = "Presiona ENTER para reiniciar";
+        metrics = g.getFontMetrics();
+        x = (WIDTH - metrics.stringWidth(subMessage)) / 2;
+        y += metrics.getHeight() + 10; 
+        g.drawString(subMessage, x, y);
     }
 
     private void drawMiniPauseScreen(Graphics g) {
@@ -237,15 +264,27 @@ public class juegopong extends JPanel implements ActionListener {
         g.fillRect(0, 0, WIDTH, HEIGHT);
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 36));
-        g.drawString("ENTRETIEMPO", WIDTH / 2 - 70, HEIGHT / 2 - 20);
-        g.setFont(new Font("Arial", Font.PLAIN, 24));
-        g.drawString("Reanuda el juego presionando ENTER", WIDTH / 2 - 220, HEIGHT / 2 + 30);
-    }
+        String message = "ENTRETIEMPO";
+        FontMetrics metrics = g.getFontMetrics();
+        int x = (WIDTH - metrics.stringWidth(message)) / 2;
+        int y = HEIGHT / 2 - metrics.getHeight() / 2;
+        g.drawString(message, x, y);
 
+        g.setFont(new Font("Arial", Font.PLAIN, 24));
+        String subMessage = "Reanuda el juego presionando ENTER";
+        metrics = g.getFontMetrics();
+        x = (WIDTH - metrics.stringWidth(subMessage)) / 2;
+        y += metrics.getHeight() + 10; 
+        g.drawString(subMessage, x, y);
+    }
+    
     private void togglePause() {
         isPaused = !isPaused;
-        if (isPaused) timer.stop();
-        else timer.start();
+        if (isPaused) {
+            timer.stop();
+        } else {
+            timer.start();
+        }
         repaint();
     }
 
