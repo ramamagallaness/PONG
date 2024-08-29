@@ -112,17 +112,26 @@ public class juegopong extends JPanel implements ActionListener {
             }
 
             repaint();
-        } else if (inMiniPause && !waitingForPlayerStart) {
+        } else if (inMiniPause && waitingForPlayerStart) {
             repaint();
         }
     }
 
+
     private void movePaddles() {
-        if (player1Up && player1Y > (HEIGHT - COURT_HEIGHT) / 2) player1Y -= 10;
-        if (player1Down && player1Y < (HEIGHT - COURT_HEIGHT) / 2 + COURT_HEIGHT - PADDLE_HEIGHT) player1Y += 10;
-        if (player2Up && player2Y > (HEIGHT - COURT_HEIGHT) / 2) player2Y -= 10;
-        if (player2Down && player2Y < (HEIGHT - COURT_HEIGHT) / 2 + COURT_HEIGHT - PADDLE_HEIGHT) player2Y += 10;
+        if (currentSet == 1) {
+            if (player1Up && player1Y > (HEIGHT - COURT_HEIGHT) / 2) player1Y -= 10;
+            if (player1Down && player1Y < (HEIGHT - COURT_HEIGHT) / 2 + COURT_HEIGHT - PADDLE_HEIGHT) player1Y += 10;
+            if (player2Up && player2Y > (HEIGHT - COURT_HEIGHT) / 2) player2Y -= 10;
+            if (player2Down && player2Y < (HEIGHT - COURT_HEIGHT) / 2 + COURT_HEIGHT - PADDLE_HEIGHT) player2Y += 10;
+        } else {
+            if (player2Up && player1Y > (HEIGHT - COURT_HEIGHT) / 2) player1Y -= 10;
+            if (player2Down && player1Y < (HEIGHT - COURT_HEIGHT) / 2 + COURT_HEIGHT - PADDLE_HEIGHT) player1Y += 10;
+            if (player1Up && player2Y > (HEIGHT - COURT_HEIGHT) / 2) player2Y -= 10;
+            if (player1Down && player2Y < (HEIGHT - COURT_HEIGHT) / 2 + COURT_HEIGHT - PADDLE_HEIGHT) player2Y += 10;
+        }
     }
+
 
     private void moveBall() {
         ballX += ballXSpeed;
@@ -133,7 +142,10 @@ public class juegopong extends JPanel implements ActionListener {
         int x = (WIDTH - COURT_WIDTH) / 2;
         int y = (HEIGHT - COURT_HEIGHT) / 2;
 
-        if (ballY <= y || ballY >= y + COURT_HEIGHT - BALL_SIZE) ballYSpeed = -ballYSpeed;
+        if (ballY <= y || ballY >= y + COURT_HEIGHT - BALL_SIZE) {
+            ballYSpeed = -ballYSpeed;
+        }
+
         if (ballX <= x + PADDLE_WIDTH && ballY + BALL_SIZE > player1Y && ballY < player1Y + PADDLE_HEIGHT) {
             ballXSpeed = -ballXSpeed;
             ballX = x + PADDLE_WIDTH;
@@ -141,23 +153,37 @@ public class juegopong extends JPanel implements ActionListener {
             if (Math.abs(ballYSpeed) < MAX_BALL_SPEED) ballYSpeed *= SPEED_INCREMENT;
         }
 
-
-        if (ballX >= x + COURT_WIDTH - PADDLE_WIDTH - BALL_SIZE && ballY + BALL_SIZE >= player2Y && ballY <= player2Y + PADDLE_HEIGHT) {
+        if (ballX + BALL_SIZE >= x + COURT_WIDTH - PADDLE_WIDTH && ballY + BALL_SIZE > player2Y && ballY < player2Y + PADDLE_HEIGHT) {
             ballXSpeed = -ballXSpeed;
+            ballX = x + COURT_WIDTH - PADDLE_WIDTH - BALL_SIZE;
             if (Math.abs(ballXSpeed) < MAX_BALL_SPEED) ballXSpeed *= SPEED_INCREMENT;
             if (Math.abs(ballYSpeed) < MAX_BALL_SPEED) ballYSpeed *= SPEED_INCREMENT;
         }
 
-        if (ballX < x - BALL_SIZE) {
-            player2Score++;
-            resetBall();
-            if (player2Score >= POINTS_TO_WIN || player1Score >= POINTS_TO_WIN) checkWin();
-        }
+        if (currentSet == 1) {
+            if (ballX < x - BALL_SIZE) {
+                player2Score++;
+                resetBall();
+                if (player2Score >= POINTS_TO_WIN || player1Score >= POINTS_TO_WIN) checkWin();
+            }
 
-        if (ballX > x + COURT_WIDTH) {
-            player1Score++;
-            resetBall();
-            if (player1Score >= POINTS_TO_WIN || player2Score >= POINTS_TO_WIN) checkWin();
+            if (ballX > x + COURT_WIDTH) {
+                player1Score++;
+                resetBall();
+                if (player1Score >= POINTS_TO_WIN || player2Score >= POINTS_TO_WIN) checkWin();
+            }
+        } else {
+            if (ballX < x - BALL_SIZE) {
+                player1Score++; 
+                resetBall();
+                if (player1Score >= POINTS_TO_WIN || player2Score >= POINTS_TO_WIN) checkWin();
+            }
+
+            if (ballX > x + COURT_WIDTH) {
+                player2Score++; 
+                resetBall();
+                if (player2Score >= POINTS_TO_WIN || player1Score >= POINTS_TO_WIN) checkWin();
+            }
         }
     }
 
@@ -223,7 +249,7 @@ public class juegopong extends JPanel implements ActionListener {
         g.drawString(message, x, y);
 
         g.setFont(new Font("Arial", Font.PLAIN, 24));
-        String subMessage = "Presiona ESC para reanudar";
+        String subMessage = "Presiona ESC o P para reanudar";
         metrics = g.getFontMetrics();
         x = (WIDTH - metrics.stringWidth(subMessage)) / 2;
         y += metrics.getHeight() + 10; 
@@ -284,6 +310,8 @@ public class juegopong extends JPanel implements ActionListener {
             timer.stop();
         } else {
             timer.start();
+            lastUpdateTime = System.currentTimeMillis();
+
         }
         repaint();
     }
@@ -295,6 +323,8 @@ public class juegopong extends JPanel implements ActionListener {
         resetBall();
         timer.start();
         repaint();
+        lastUpdateTime = System.currentTimeMillis();
+
     }
 
     public static void main(String[] args) {
